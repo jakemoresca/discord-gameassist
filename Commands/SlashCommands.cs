@@ -8,4 +8,5 @@ public struct SlashCommands
     public static string RandomChannelVideo => "random-channel-video";
     public static string StartService => "start-service";
     public static string ServiceCheck => "service-check";
+    public static string StopService => "stop-service";
 }

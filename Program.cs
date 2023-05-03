@@ -63,6 +63,7 @@ void RegisterSlashCommands()
     Bootstrapper.RegisterType<ISlashCommand, PlexInviteCommand>();
     Bootstrapper.RegisterType<ISlashCommand, ProcessCheckCommand>();
     Bootstrapper.RegisterType<ISlashCommand, StartServiceCommand>();
+    Bootstrapper.RegisterType<ISlashCommand, StopServiceCommand>();
 }
 
 await MainAsync();

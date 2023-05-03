@@ -22,10 +22,21 @@ public class SlashCommandFactory : ISlashCommandFactory
             .WithDescription("Start a service if not already started.")
             .AddOption(new SlashCommandOptionBuilder()
                 .WithName("server")
-                .WithDescription("Select the server you want to check.")
+                .WithDescription("Select the server you want to start.")
                 .WithRequired(true)
                 .AddChoice("Project Zomboid", "project-zomboid")
                 .AddChoice("The Forest", "the-forest-link")
+                .WithType(ApplicationCommandOptionType.String)
+            );
+
+        var stopServiceCommand = new SlashCommandBuilder();
+        stopServiceCommand.WithName(SlashCommands.StopService)
+            .WithDescription("Stop a service.")
+            .AddOption(new SlashCommandOptionBuilder()
+                .WithName("server")
+                .WithDescription("Select the server you want to stop.")
+                .WithRequired(true)
+                .AddChoice("The Forest", "TheForestDedicatedServer")
                 .WithType(ApplicationCommandOptionType.String)
             );
 
@@ -71,7 +82,8 @@ public class SlashCommandFactory : ISlashCommandFactory
             generateMemeCommand,
             jokeCommand,
             pingCommand,
-            plexInviteCommand
+            plexInviteCommand,
+            stopServiceCommand
         };
 
         return builders;
