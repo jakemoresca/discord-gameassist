@@ -10,7 +10,6 @@ public class CommandHandler : ICommandHandler
     private readonly DiscordSocketClient _client;
     private readonly CommandService _commands;
 
-    // Retrieve client and CommandService instance via ctor
     public CommandHandler(DiscordSocketClient client, CommandService commands)
     {
         _commands = commands;
