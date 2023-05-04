@@ -1,7 +1,15 @@
 using Discord;
+using Microsoft.Extensions.Configuration;
 
 public class SlashCommandFactory : ISlashCommandFactory
 {
+    private readonly IConfigurationRoot _config;
+
+    public SlashCommandFactory(IConfigurationRoot config)
+    {
+        _config = config;
+    }
+
     public IEnumerable<SlashCommandBuilder> CreateSlashCommandBuilders()
     {
         var pingCommand = new SlashCommandBuilder();
@@ -11,9 +19,7 @@ public class SlashCommandFactory : ISlashCommandFactory
                 .WithName("server")
                 .WithDescription("Select the server you want to check.")
                 .WithRequired(true)
-                .AddChoice("Mediaserver", "mediaserver")
-                .AddChoice("Project Zomboid", "process|cmd|StartServer64_nosteam.bat - Shortcut")
-                .AddChoice("The Forest", "process|TheForestDedicatedServer")
+                .AddChoicesFromOptions(SlashCommands.ServiceCheck, _config)
                 .WithType(ApplicationCommandOptionType.String)
             );
 
@@ -24,8 +30,7 @@ public class SlashCommandFactory : ISlashCommandFactory
                 .WithName("server")
                 .WithDescription("Select the server you want to start.")
                 .WithRequired(true)
-                .AddChoice("Project Zomboid", "project-zomboid")
-                .AddChoice("The Forest", "the-forest-link")
+                .AddChoicesFromOptions(SlashCommands.StartService, _config)
                 .WithType(ApplicationCommandOptionType.String)
             );
 
@@ -36,7 +41,7 @@ public class SlashCommandFactory : ISlashCommandFactory
                 .WithName("server")
                 .WithDescription("Select the server you want to stop.")
                 .WithRequired(true)
-                .AddChoice("The Forest", "TheForestDedicatedServer")
+                .AddChoicesFromOptions(SlashCommands.StopService, _config)
                 .WithType(ApplicationCommandOptionType.String)
             );
 
@@ -57,13 +62,7 @@ public class SlashCommandFactory : ISlashCommandFactory
                 .WithName("category")
                 .WithDescription("Select the category of the joke you want.")
                 .WithRequired(true)
-                .AddChoice("Any", "Any")
-                .AddChoice("Programming", "Programming")
-                .AddChoice("Misc", "Misc")
-                .AddChoice("Dark", "Dark")
-                .AddChoice("Pun", "Pun")
-                .AddChoice("Spooky", "Spooky")
-                .AddChoice("Christmas", "Christmas")
+                .AddChoicesFromOptions(SlashCommands.Joke, _config)
                 .WithType(ApplicationCommandOptionType.String)
             );
 
@@ -87,5 +86,25 @@ public class SlashCommandFactory : ISlashCommandFactory
         };
 
         return builders;
+    }
+}
+
+static class SlashCommandBuilderExtensions
+{
+    public static SlashCommandOptionBuilder AddChoicesFromOptions(this SlashCommandOptionBuilder builder, string serviceName, IConfigurationRoot config)
+    {
+        var commandChoices =  config.GetRequiredSection("Commands")
+            .GetRequiredSection(serviceName)
+            .GetRequiredSection("choices")
+            .GetChildren();
+
+        foreach (var commandChoice in commandChoices)
+        {
+            var name = commandChoice["name"];
+            var value = commandChoice["value"];
+            builder.AddChoice(name, value);   
+        }
+
+        return builder;
     }
 }

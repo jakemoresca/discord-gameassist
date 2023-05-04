@@ -1,8 +1,16 @@
 using System.Diagnostics;
 using Discord.WebSocket;
+using Microsoft.Extensions.Configuration;
 
 public class StartServiceCommand : ISlashCommand
 {
+    private readonly IConfigurationRoot _config;
+
+    public StartServiceCommand(IConfigurationRoot config)
+    {
+        _config = config;
+    }
+
     public string CommandName => SlashCommands.StartService;
 
     public async Task Handle(SocketSlashCommand command)
@@ -12,7 +20,8 @@ public class StartServiceCommand : ISlashCommand
 
         try
         {
-            var applicationFolderPath = Path.Combine(@"C:\apps\", serviceName);
+            var appsFolder =  _config.GetRequiredSection("Settings")["AppsFolder"] ?? string.Empty;
+            var applicationFolderPath = Path.Combine(appsFolder, serviceName);
 
             string[] extensions = new[] { ".exe", ".bat", ".cmd", ".lnk" };
 
