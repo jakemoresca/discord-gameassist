@@ -12,8 +12,8 @@ public class SlashCommandFactory : ISlashCommandFactory
 
     public IEnumerable<SlashCommandBuilder> CreateSlashCommandBuilders()
     {
-        var pingCommand = new SlashCommandBuilder();
-        pingCommand.WithName(SlashCommands.ServiceCheck)
+        var serviceCheckCommand = new SlashCommandBuilder();
+        serviceCheckCommand.WithName(SlashCommands.ServiceCheck)
             .WithDescription("Check if the service is available.")
             .AddOption(new SlashCommandOptionBuilder()
                 .WithName("server")
@@ -80,9 +80,10 @@ public class SlashCommandFactory : ISlashCommandFactory
         {
             generateMemeCommand,
             jokeCommand,
-            pingCommand,
+            serviceCheckCommand,
             plexInviteCommand,
-            stopServiceCommand
+            stopServiceCommand,
+            startServiceCommand
         };
 
         return builders;
